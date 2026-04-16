@@ -86,9 +86,9 @@
     "trade_insights": null,
     "score_payload": null,
     "monitoring": {
-      "current_price": 197.77000427246094,
-      "current_price_formatted": "$197.77",
-      "updated_at": "2026-04-16T14:33:29.968862-04:00",
+      "current_price": 197.81500244140625,
+      "current_price_formatted": "$197.82",
+      "updated_at": "2026-04-16T14:34:31.127782-04:00",
       "alerts": []
     },
     "result": null,
@@ -96,12 +96,9 @@
     "stock_symbol": "NVDA",
     "profit_loss": null,
     "profit_pct": null,
-    "live_profit_loss": 608.42,
-    "live_profit_pct": 11.87,
-    "distance_to_stop": 37.77,
-    "distance_to_stop_pct": 23.61,
-    "distance_to_target": 32.23,
-    "distance_to_target_pct": 16.3,
+    "distance_to_stop_pct": 23.63,
+    "distance_to_target": 32.18,
+    "distance_to_target_pct": 16.27,
     "outcome": null
   },
   {
@@ -947,9 +944,9 @@
       ]
     },
     "monitoring": {
-      "current_price": 108.125,
-      "current_price_formatted": "$108.12",
-      "updated_at": "2026-04-16T14:33:29.966855-04:00",
+      "current_price": 108.21499633789062,
+      "current_price_formatted": "$108.21",
+      "updated_at": "2026-04-16T14:34:31.123726-04:00",
       "alerts": []
     },
     "result": null,
@@ -963,12 +960,12 @@
     "risk_reward_ratio": 0.78,
     "profit_loss": null,
     "profit_pct": null,
-    "live_profit_loss": 6.25,
-    "live_profit_pct": 0.12,
-    "distance_to_stop": 9.12,
-    "distance_to_stop_pct": 9.22,
-    "distance_to_target": 6.88,
-    "distance_to_target_pct": 6.36,
+    "live_profit_loss": 10.75,
+    "live_profit_pct": 0.2,
+    "distance_to_stop": 9.21,
+    "distance_to_stop_pct": 9.31,
+    "distance_to_target": 6.79,
+    "distance_to_target_pct": 6.27,
     "outcome": null
   },
   {
@@ -1084,9 +1081,9 @@
       ]
     },
     "monitoring": {
-      "current_price": 71.55249786376953,
-      "current_price_formatted": "$71.55",
-      "updated_at": "2026-04-16T14:33:29.963613-04:00",
+      "current_price": 71.58499908447266,
+      "current_price_formatted": "$71.58",
+      "updated_at": "2026-04-16T14:34:31.117122-04:00",
       "alerts": []
     },
     "result": null,
@@ -1100,12 +1097,12 @@
     "risk_reward_ratio": 1.33,
     "profit_loss": null,
     "profit_pct": null,
-    "live_profit_loss": 38.67,
-    "live_profit_pct": 0.78,
-    "distance_to_stop": 3.55,
-    "distance_to_stop_pct": 5.22,
-    "distance_to_target": 3.45,
-    "distance_to_target_pct": 4.82,
+    "live_profit_loss": 40.95,
+    "live_profit_pct": 0.82,
+    "distance_to_stop": 3.58,
+    "distance_to_stop_pct": 5.27,
+    "distance_to_target": 3.42,
+    "distance_to_target_pct": 4.77,
     "outcome": null
   }
 ]
