@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container dashboard-premium">
+    <section class="dashboard-hero">
+        <div class="dashboard-hero-copy">
+            <div class="dashboard-eyebrow">EarningsEdge AI</div>
+            <h1>EarningsEdge AI</h1>
+            <p class="dashboard-subtitle">Personal earnings, stock, and AI analysis with a cleaner decision surface.</p>
+            <div class="dashboard-signoff">
+                <span>Built by Samiallo</span>
+                <span id="marketDateNote">Market date: Loading...</span>
+            </div>
+            <div class="dashboard-search">
+                <input type="text" id="dashboardHeroSearch" class="search-input" placeholder="Search a ticker like NVDA, AAPL, AMD">
+                <button class="btn-primary" onclick="searchHeroStock()">
+                    <i class="fas fa-search"></i>
+                    <span>Analyze Stock</span>
+                </button>
+            </div>
+            <div class="dashboard-summary-strip">
+                <div class="dashboard-summary-item">
+                    <span class="dashboard-summary-label">Upcoming earnings</span>
+                    <strong id="earningsCount">0</strong>
+                </div>
+                <div class="dashboard-summary-item">
+                    <span class="dashboard-summary-label">Watchlist names</span>
+                    <strong id="watchlistCount">0</strong>
+                </div>
+                <div class="dashboard-summary-item">
+                    <span class="dashboard-summary-label">Open trades</span>
+                    <strong id="openTradesCount">0</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-feature-card" id="featuredStockPanel">
+            <div class="dashboard-feature-topline">Selected Focus</div>
+            <div class="dashboard-feature-symbol">Loading...</div>
+            <div class="dashboard-feature-company">Pulling the highest-priority name from your workspace.</div>
+            <div class="dashboard-feature-price">--</div>
+            <div class="dashboard-feature-move">--</div>
+            <div class="dashboard-feature-meta">
+                <div>
+                    <span>Session</span>
+                    <strong>--</strong>
+                </div>
+                <div>
+                    <span>Next earnings</span>
+                    <strong>--</strong>
+                </div>
+                <div>
+                    <span>Context</span>
+                    <strong>--</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="dashboard-top-grid">
+        <section class="card dashboard-card ai-analysis-card">
+            <div class="card-header dashboard-section-header">
+                <div>
+                    <h3><i class="fas fa-brain"></i> AI Insight</h3>
+                    <div class="section-caption">A concise read on what matters most across your current watchlist and earnings flow.</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <div id="dashboardAiInsight" class="dashboard-ai-panel">
+                    <div class="loading-spinner">Building your market read...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card dashboard-card">
+            <div class="card-header dashboard-section-header">
+                <div>
+                    <h3><i class="fas fa-star"></i> Watchlist</h3>
+                    <div class="section-caption">Your current names, live moves, and next report timing.</div>
+                </div>
+                <button class="btn-icon btn-icon-subtle" onclick="openEditWatchlist()" title="Edit watchlist">
+                    <i class="fas fa-pen"></i>
+                </button>
+            </div>
+            <div class="card-content">
+                <div class="watchlist-toolbar dashboard-watchlist-toolbar">
+                    <input type="text" id="addWatchlistSymbol" class="search-input" placeholder="Add symbol">
+                    <button class="btn-primary" onclick="addWatchlistSymbol()">Add</button>
+                </div>
+                <div id="watchlistContainer" class="watchlist-table"></div>
+            </div>
+        </section>
+    </div>
+
+    <section class="card dashboard-card dashboard-market-panel">
+        <div class="card-header dashboard-section-header">
+            <div>
+                <h3><i class="fas fa-calendar-lines-pen"></i> Near Earnings</h3>
+                <div class="section-caption">A quick scan of today and tomorrow without repeating the full board.</div>
+            </div>
+        </div>
+        <div class="card-content dashboard-session-grid">
+            <div class="dashboard-session-group">
+                <div class="dashboard-session-label">Today</div>
+                <div id="todayEarningsList" class="earnings-list compact-earnings-list">
+                    <div class="skeleton-table">
+                        <div class="skeleton-row"></div>
+                        <div class="skeleton-row"></div>
+                    </div>
+                </div>
+                <div class="expand-actions">
+                    <button id="toggleTodayBtn" class="btn-secondary btn-compact" onclick="toggleTodayEarnings()" style="display:none;">
+                        Show More
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-session-group">
+                <div class="dashboard-session-label">Tomorrow</div>
+                <div id="tomorrowEarningsList" class="earnings-list compact-earnings-list">
+                    <div class="skeleton-table">
+                        <div class="skeleton-row"></div>
+                        <div class="skeleton-row"></div>
+                    </div>
+                </div>
+                <div class="expand-actions">
+                    <button id="toggleTomorrowBtn" class="btn-secondary btn-compact" onclick="toggleTomorrowEarnings()" style="display:none;">
+                        Show More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card dashboard-card">
+        <div class="card-header dashboard-section-header">
+            <div>
+                <h3><i class="fas fa-table"></i> Earnings Board</h3>
+                <div class="section-caption">The earnings names most worth reviewing this week, with live price context.</div>
+            </div>
+            <div class="table-controls">
+                <button class="btn-icon btn-icon-subtle" onclick="refreshEarnings()" title="Refresh earnings board">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="table-responsive dashboard-table-shell">
+                <table class="earnings-table dashboard-earnings-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Company</th>
+                            <th>Report Date</th>
+                            <th>Session</th>
+                            <th>Price</th>
+                            <th>Day Move</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upcomingEarningsTableBody">
+                        <tr><td colspan="6" class="text-center">Loading earnings board...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="expand-actions">
+                <button id="toggleUpcomingBtn" class="btn-secondary" onclick="toggleUpcomingEarnings()" style="display:none;">
+                    Show More
+                </button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div id="editWatchlistModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Watchlist</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Enter the symbols you want to track, separated by commas.</p>
+            <textarea id="watchlistInput" rows="5" placeholder="NVDA, AMD, TSLA, META, AAPL"></textarea>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveDashboardWatchlist()">Save</button>
+                <button class="btn-secondary" onclick="closeEditWatchlist()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js', v='20260416h') }}"></script>
+{% endblock %}

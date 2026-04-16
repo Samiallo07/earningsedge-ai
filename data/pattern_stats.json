@@ -1,0 +1,145 @@
+[
+  {
+    "id": "estimate_revision:up",
+    "feature_name": "estimate_revision",
+    "feature_value": "up",
+    "win_count": 3,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": 1.26,
+    "win_rate": 75.0,
+    "sample_size": 4
+  },
+  {
+    "id": "expected_move:low",
+    "feature_name": "expected_move",
+    "feature_value": "low",
+    "win_count": 3,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": 1.26,
+    "win_rate": 75.0,
+    "sample_size": 4
+  },
+  {
+    "id": "valuation_level:low",
+    "feature_name": "valuation_level",
+    "feature_value": "low",
+    "win_count": 3,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": 1.26,
+    "win_rate": 75.0,
+    "sample_size": 4
+  },
+  {
+    "id": "pre_earnings_run:large",
+    "feature_name": "pre_earnings_run",
+    "feature_value": "large",
+    "win_count": 3,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 1.78,
+    "win_rate": 100.0,
+    "sample_size": 3
+  },
+  {
+    "id": "price_trend:up",
+    "feature_name": "price_trend",
+    "feature_value": "up",
+    "win_count": 2,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": 1.41,
+    "win_rate": 66.7,
+    "sample_size": 3
+  },
+  {
+    "id": "historical_reaction:mixed",
+    "feature_name": "historical_reaction",
+    "feature_value": "mixed",
+    "win_count": 2,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 1.28,
+    "win_rate": 100.0,
+    "sample_size": 2
+  },
+  {
+    "id": "setup_type:overextended",
+    "feature_name": "setup_type",
+    "feature_value": "overextended",
+    "win_count": 2,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 2.27,
+    "win_rate": 100.0,
+    "sample_size": 2
+  },
+  {
+    "id": "historical_reaction:negative",
+    "feature_name": "historical_reaction",
+    "feature_value": "negative",
+    "win_count": 0,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": -0.3,
+    "win_rate": 0.0,
+    "sample_size": 1
+  },
+  {
+    "id": "historical_reaction:positive",
+    "feature_name": "historical_reaction",
+    "feature_value": "positive",
+    "win_count": 1,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 2.77,
+    "win_rate": 100.0,
+    "sample_size": 1
+  },
+  {
+    "id": "pre_earnings_run:medium",
+    "feature_name": "pre_earnings_run",
+    "feature_value": "medium",
+    "win_count": 0,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": -0.3,
+    "win_rate": 0.0,
+    "sample_size": 1
+  },
+  {
+    "id": "price_trend:down",
+    "feature_name": "price_trend",
+    "feature_value": "down",
+    "win_count": 1,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 0.79,
+    "win_rate": 100.0,
+    "sample_size": 1
+  },
+  {
+    "id": "setup_type:momentum",
+    "feature_name": "setup_type",
+    "feature_value": "momentum",
+    "win_count": 0,
+    "loss_count": 1,
+    "flat_count": 0,
+    "avg_return": -0.3,
+    "win_rate": 0.0,
+    "sample_size": 1
+  },
+  {
+    "id": "setup_type:neutral",
+    "feature_name": "setup_type",
+    "feature_value": "neutral",
+    "win_count": 1,
+    "loss_count": 0,
+    "flat_count": 0,
+    "avg_return": 0.79,
+    "win_rate": 100.0,
+    "sample_size": 1
+  }
+]

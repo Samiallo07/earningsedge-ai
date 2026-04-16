@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Earnings Analysis{% endblock %}
+
+{% block content %}
+<div class="earnings-container">
+    <div class="page-header page-header-split">
+        <div class="page-header-copy">
+            <div class="page-kicker">Samiallo&apos;s Earnings Workspace</div>
+            <h1><i class="fas fa-chart-line"></i> Earnings Analysis</h1>
+            <p>Samiallo&apos;s earnings workspace for reviewing the print, the reaction, and the full setup before committing capital.</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn-secondary" type="button" onclick="prefillEarningsSymbol('NVDA')">NVDA</button>
+            <button class="btn-secondary" type="button" onclick="prefillEarningsSymbol('AAPL')">AAPL</button>
+            <button class="btn-secondary" type="button" onclick="prefillEarningsSymbol('TSLA')">TSLA</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3><i class="fas fa-search"></i> Search Stock</h3>
+                <div class="section-caption">Enter a ticker to load recent earnings history, price reactions, and the current setup score.</div>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="search-box">
+                <input type="text" id="stockSearch" placeholder="Enter stock symbol (e.g., NVDA, AAPL, TSLA)"
+                       class="search-input" autocomplete="off">
+                <button class="btn-primary" onclick="searchEarnings()">
+                    <i class="fas fa-chart-line"></i> Analyze
+                </button>
+                <button class="btn-secondary" type="button" id="logTradeFromEarningsBtn" onclick="logTradeFromEarnings()" disabled>
+                    <i class="fas fa-briefcase"></i> Log This Trade
+                </button>
+            </div>
+            <div class="shortcut-chips">
+                <button class="shortcut-chip" type="button" onclick="prefillEarningsSymbol('MSFT')">MSFT</button>
+                <button class="shortcut-chip" type="button" onclick="prefillEarningsSymbol('AMZN')">AMZN</button>
+                <button class="shortcut-chip" type="button" onclick="prefillEarningsSymbol('META')">META</button>
+                <button class="shortcut-chip" type="button" onclick="prefillEarningsSymbol('AMD')">AMD</button>
+            </div>
+            <div id="searchSuggestions" class="suggestions"></div>
+        </div>
+    </div>
+
+    <div id="stockInfo" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-building"></i> <span id="stockSymbol"></span> - <span id="stockName"></span></h3>
+                    <div class="section-caption">Current market context for the name under review.</div>
+                </div>
+                <div class="stock-price" id="currentPrice"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="earningsStats" style="display: none;">
+        <div class="stats-grid stats-grid-compact">
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <span class="stat-value" id="avgBeat">0%</span>
+                    <span class="stat-label">Average Beat %</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-arrow-up"></i>
+                <div>
+                    <span class="stat-value" id="winRate">0%</span>
+                    <span class="stat-label">Positive Reactions</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-waveform"></i>
+                <div>
+                    <span class="stat-value" id="avgMove">0%</span>
+                    <span class="stat-label">Average Earnings Move</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="setupAnalysisPanel" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-brain"></i> Pre-Earnings Setup Score</h3>
+                    <div class="section-caption">A structured setup score built from current research and your own saved trade history.</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="stats-grid stats-grid-compact" id="setupScoreMetrics"></div>
+
+                <div class="analysis-grid">
+                    <div class="card analysis-helper-card">
+                        <div class="card-header">
+                            <div>
+                                <h3><i class="fas fa-check-circle"></i> Setup Read</h3>
+                                <div class="section-caption">A concise read on why the setup looks strong, mixed, or lower quality.</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="insight-list" id="setupExplanationList"></div>
+                        </div>
+                    </div>
+
+                    <div class="card analysis-helper-card">
+                        <div class="card-header">
+                            <div>
+                                <h3><i class="fas fa-memory"></i> Trade Memory</h3>
+                                <div class="section-caption">See how the current setup compares with similar winners and losers from your own journal.</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="insight-list" id="setupMemoryList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card analysis-helper-card">
+                    <div class="card-header">
+                        <div>
+                            <h3><i class="fas fa-sliders-h"></i> Feature Snapshot</h3>
+                            <div class="section-caption">The exact features currently feeding the setup score.</div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="insight-list" id="setupFeatureList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="analysis-grid">
+        <div id="performanceChart" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-chart-line"></i> Earnings Reaction Chart</h3>
+                        <div class="section-caption">Switch between the earnings surprise and the stock&apos;s immediate post-report move.</div>
+                    </div>
+                    <div class="chart-controls">
+                        <button class="btn-sm active" data-earnings-chart="surprise" onclick="switchChart('surprise')">Surprise %</button>
+                        <button class="btn-sm" data-earnings-chart="move" onclick="switchChart('move')">Price Move %</button>
+                    </div>
+                </div>
+                <div class="card-content chart-panel">
+                    <div class="chart-frame chart-frame-lg">
+                        <canvas id="earningsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card analysis-helper-card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-lightbulb"></i> What To Look For</h3>
+                    <div class="section-caption">A quick guide to the details that usually matter most around the print.</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="insight-list">
+                    <div class="insight-row">
+                        <strong>Beat quality</strong>
+                        <span>If a stock beats estimates repeatedly but still sells off, expectations may already be too high.</span>
+                    </div>
+                    <div class="insight-row">
+                        <strong>Reaction pattern</strong>
+                        <span>Look for repeated post-earnings moves so you can see whether the name tends to trend or fade.</span>
+                    </div>
+                    <div class="insight-row">
+                        <strong>Reason column</strong>
+                        <span>Use the notes to separate a clean earnings reaction from a move driven by guidance, margins, or another catalyst.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="earningsTable" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-table"></i> Last 10 Earnings Results</h3>
+                    <div class="section-caption">The most recent quarterly results with earnings surprise and price reaction side by side.</div>
+                </div>
+                <div class="table-controls">
+                    <button class="btn-icon" onclick="exportToCSV()" title="Export to CSV">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn-icon" onclick="refreshEarnings()" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="table-responsive">
+                    <table class="earnings-table" id="earningsHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Quarter</th>
+                                <th>Actual EPS</th>
+                                <th>Estimate EPS</th>
+                                <th>Surprise</th>
+                                <th>Surprise %</th>
+                                <th>Earnings Day Move</th>
+                                <th>Next Day Move</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earningsTableBody">
+                            <tr><td colspan="8" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/earnings.js', v='20260416h') }}"></script>
+{% endblock %}

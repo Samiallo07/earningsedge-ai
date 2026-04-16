@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Trading Workspace{% endblock %}
+
+{% block content %}
+<div class="trades-container premium-trades-page">
+    <div class="page-header page-header-split">
+        <div class="page-header-copy">
+            <div class="page-kicker">Samiallo&apos;s Trading Workspace</div>
+            <h1><i class="fas fa-briefcase"></i> Trades Workspace</h1>
+            <p>Samiallo&apos;s live trading workspace for risk control, open-position management, and sharper setup review.</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn-primary" onclick="openAddTradeModal()">
+                <i class="fas fa-plus"></i> Add Trade
+            </button>
+        </div>
+    </div>
+
+    <div id="tradeWorkspaceMetrics" class="trade-metrics-shell">
+        <div class="loading-spinner">Loading your trading workspace...</div>
+    </div>
+
+    <div class="card trade-monitor-card">
+        <div class="card-header">
+            <div>
+                        <h3><i class="fas fa-satellite-dish"></i> Live Trade Monitor</h3>
+                        <div class="section-caption">Monitor each open position with live P&amp;L, stop distance, target distance, and time exits.</div>
+            </div>
+            <div class="trade-monitor-meta" id="tradeMonitorMeta">Waiting for live prices...</div>
+        </div>
+        <div class="card-content">
+            <div id="liveTradeMonitor" class="live-monitor-grid">
+                <div class="loading-spinner">Checking open positions...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar action-bar-surface">
+        <div class="toolbar-copy">
+            <div class="toolbar-title">Workspace Filters</div>
+            <div class="section-caption">Filter the journal by status or trade type without losing the broader context.</div>
+        </div>
+        <div class="trade-filter-row">
+            <select id="tradeStatusFilter" onchange="renderTradeWorkspace()">
+                <option value="all">All Trades</option>
+                <option value="open">Open Trades</option>
+                <option value="closed">Closed Trades</option>
+                <option value="wins">Winning Trades</option>
+                <option value="losses">Losing Trades</option>
+            </select>
+            <select id="tradeTypeFilter" onchange="renderTradeWorkspace()">
+                <option value="all">All Types</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="trades-stack">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-folder-open"></i> Open Trades</h3>
+                    <div class="section-caption">Open positions with live pricing, mark-to-market P&amp;L, and automatic stop, target, or time-based exits.</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="table-responsive">
+                    <table class="trades-table" id="openTradesTable">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Side</th>
+                                <th>Type</th>
+                                <th>Entry</th>
+                                <th>Live</th>
+                                <th>Shares</th>
+                                <th>Live P&amp;L</th>
+                                <th>Live %</th>
+                                <th>Stop</th>
+                                <th>Target</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="openTradesTableBody">
+                            <tr><td colspan="13" class="text-center">Loading open trades...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fas fa-book-open"></i> Closed Trades &amp; Review History</h3>
+                    <div class="section-caption">Review completed trades, exit reasons, and the patterns you want to keep or remove from future analysis.</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="table-responsive">
+                    <table class="trades-table" id="closedTradesTable">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Side</th>
+                                <th>Type</th>
+                                <th>Entry</th>
+                                <th>Exit</th>
+                                <th>Result</th>
+                                <th>P&amp;L</th>
+                                <th>P&amp;L %</th>
+                                <th>Exit Reason</th>
+                                <th>Duration</th>
+                                <th>Review</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="closedTradesTableBody">
+                            <tr><td colspan="12" class="text-center">Loading closed trades...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="trade-chart-grid trade-chart-grid-refined">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-chart-line"></i> Equity Curve</h3>
+                        <div class="section-caption">Cumulative P&amp;L from closed trades over time.</div>
+                    </div>
+                </div>
+                <div class="card-content chart-panel">
+                    <div class="chart-summary-row" id="equityCurveSummary"></div>
+                    <div class="chart-frame chart-frame-md">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-layer-group"></i> Performance by Trade Type</h3>
+                        <div class="section-caption">See which style is actually making or losing money for you.</div>
+                    </div>
+                </div>
+                <div class="card-content chart-panel">
+                    <div class="chart-summary-row" id="tradeTypeSummary"></div>
+                    <div class="chart-frame chart-frame-md">
+                        <canvas id="tradeTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="trade-insight-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-brain"></i> AI Trading Insights</h3>
+                        <div class="section-caption">Guidance generated from your own wins, losses, and recurring setup patterns.</div>
+                    </div>
+                </div>
+                <div class="card-content" id="patternInsightsPanel">
+                    <div class="loading-spinner">Learning from your trade history...</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-lightbulb"></i> Future Trade Bias</h3>
+                        <div class="section-caption">Signals to respect more next time, and warnings that deserve extra caution.</div>
+                    </div>
+                </div>
+                <div class="card-content" id="futureSuggestionPanel">
+                    <div class="loading-spinner">Building your future trade profile...</div>
+                </div>
+            </div>
+
+            <div class="card trade-insight-grid-span">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fas fa-ranking-star"></i> Setup Leaderboard</h3>
+                        <div class="section-caption">A quick ranking of the trade types and setup groups helping or hurting results.</div>
+                    </div>
+                </div>
+                <div class="card-content" id="setupLeaderboardPanel">
+                    <div class="loading-spinner">Ranking your setups...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tradeModal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add New Trade</h3>
+            <span class="close" onclick="closeTradeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="tradeImportNotice" class="trade-import-notice" style="display:none;"></div>
+            <form id="tradeForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Stock Symbol *</label>
+                        <input type="text" id="tradeSymbol" required placeholder="e.g., NVDA">
+                    </div>
+                    <div class="form-group">
+                        <label>Side *</label>
+                        <select id="positionSide" required>
+                            <option value="Long">Long</option>
+                            <option value="Short">Short</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trade Type *</label>
+                        <select id="tradeType" required>
+                            <option value="Earnings">Earnings</option>
+                            <option value="Swing">Swing</option>
+                            <option value="Long-term">Long-term</option>
+                            <option value="Day Trade">Day Trade</option>
+                            <option value="News">News</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Entry Price *</label>
+                        <input type="number" id="entryPrice" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Shares *</label>
+                        <input type="number" id="shares" step="1" required placeholder="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Stop Loss *</label>
+                        <input type="number" id="stopLoss" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Take Profit *</label>
+                        <input type="number" id="takeProfit" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Entry Date &amp; Time *</label>
+                        <input type="datetime-local" id="entryDateTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Force Close Date &amp; Time</label>
+                        <input type="datetime-local" id="forceCloseDateTime">
+                    </div>
+                    <div class="form-group trade-close-only">
+                        <label>Exit Date &amp; Time</label>
+                        <input type="datetime-local" id="exitDateTime">
+                    </div>
+                    <div class="form-group trade-close-only">
+                        <label>Exit Price</label>
+                        <input type="number" id="exitPrice" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group trade-close-only">
+                        <label>Close Reason</label>
+                        <select id="closeReason">
+                            <option value="manual">Manual</option>
+                            <option value="take_profit_hit">Take Profit Hit</option>
+                            <option value="stop_loss_hit">Stop Loss Hit</option>
+                            <option value="time_exit_hit">Time Exit Hit</option>
+                            <option value="trimmed">Trimmed</option>
+                            <option value="thesis_changed">Thesis Changed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="closeTradeActionBtn" class="btn-secondary" onclick="submitTradeClose()" style="display:none;">
+                        Close Trade
+                    </button>
+                    <button type="submit" class="btn-primary">Save Trade</button>
+                    <button type="button" class="btn-secondary" onclick="closeTradeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/trades.js', v='20260416h') }}"></script>
+{% endblock %}

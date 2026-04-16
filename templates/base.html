@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarningsEdge AI - {% block title %}Trading Dashboard{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20260416h') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <script>
+        window.marketConfig = {
+            timezone: '{{ app_market_timezone }}',
+            currentDateOverride: '{{ app_market_date_override }}'
+        };
+    </script>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-chart-line"></i>
+                <div class="brand-copy">
+                    <span>EarningsEdge AI</span>
+                    <small>Built by Samiallo</small>
+                </div>
+            </div>
+
+            <button class="nav-toggle" id="navToggleBtn" type="button" aria-expanded="false" aria-controls="primaryNav">
+                <i class="fas fa-bars"></i>
+                <span>Menu</span>
+            </button>
+            
+            <div class="nav-links" id="primaryNav">
+                <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' or request.path == '/' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/earnings" class="nav-link {% if request.path == '/earnings' %}active{% endif %}">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="/trades" class="nav-link {% if request.path == '/trades' %}active{% endif %}">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Trades</span>
+                </a>
+                <a href="/news" class="nav-link {% if request.path == '/news' %}active{% endif %}">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Analysis</span>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <div class="market-status" id="marketStatusBadge">
+                    <i class="fas fa-circle"></i>
+                    <span>Market Open</span>
+                </div>
+                <div class="datetime-block">
+                    <div class="datetime-label">Eastern Time</div>
+                    <div class="datetime" id="currentDateTime"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="app-shell">
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <div class="site-footer-content">
+            <span>EarningsEdge AI</span>
+            <span>Built by Samiallo for sharper earnings research, disciplined trade review, and cleaner market decisions.</span>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js', v='20260416h') }}"></script>
+    
+    <script>
+        let dateTimeTimer;
+        let marketStatusTimer;
+
+        // Update date and time
+        function updateDateTime() {
+            const dateTimeElement = document.getElementById('currentDateTime');
+            if (!dateTimeElement || typeof formatMarketClock !== 'function') return;
+            dateTimeElement.textContent = formatMarketClock().timeLabel;
+        }
+        function scheduleDateTimeUpdate() {
+            clearTimeout(dateTimeTimer);
+            updateDateTime();
+            const now = new Date();
+            const delay = 1000 - now.getMilliseconds() + 10;
+            dateTimeTimer = setTimeout(scheduleDateTimeUpdate, delay);
+        }
+        scheduleDateTimeUpdate();
+        
+        // Check market status
+        function checkMarketStatus() {
+            const marketNow = new Date();
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: window.marketConfig.timezone,
+                weekday: 'short',
+                hour: '2-digit',
+                hour12: false,
+                minute: '2-digit'
+            });
+            const parts = Object.fromEntries(formatter.formatToParts(marketNow).map(part => [part.type, part.value]));
+            const hour = Number(parts.hour);
+            const minute = Number(parts.minute);
+            const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+            const day = dayMap[parts.weekday];
+            const isWeekend = day === 0 || day === 6;
+            const currentMinutes = (hour * 60) + minute;
+            const marketOpenMinutes = (9 * 60) + 30;
+            const marketCloseMinutes = 16 * 60;
+            const isMarketHours = currentMinutes >= marketOpenMinutes && currentMinutes < marketCloseMinutes;
+            
+            const statusElement = document.getElementById('marketStatusBadge');
+            if (!statusElement) return;
+            if (isWeekend || !isMarketHours) {
+                statusElement.className = 'market-status market-status-closed';
+                statusElement.innerHTML = '<i class="fas fa-circle"></i><span>Market Closed</span>';
+            } else {
+                statusElement.className = 'market-status market-status-open';
+                statusElement.innerHTML = '<i class="fas fa-circle"></i><span>Market Open</span>';
+            }
+        }
+        function scheduleMarketStatusUpdate() {
+            clearTimeout(marketStatusTimer);
+            checkMarketStatus();
+            const now = new Date();
+            const delay = ((60 - now.getSeconds()) * 1000) - now.getMilliseconds() + 20;
+            marketStatusTimer = setTimeout(scheduleMarketStatusUpdate, delay);
+        }
+        scheduleMarketStatusUpdate();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

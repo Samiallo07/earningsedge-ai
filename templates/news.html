@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Stock Research{% endblock %}
+
+{% block content %}
+<div class="news-container research-page">
+    <div class="page-header research-header">
+        <div>
+            <div class="page-kicker">Samiallo&apos;s Research Desk</div>
+            <h1><i class="fas fa-brain"></i> Stock Research Dashboard</h1>
+            <p>Samiallo&apos;s research desk for price structure, valuation context, analyst positioning, and the core risks that matter before a decision.</p>
+        </div>
+    </div>
+
+    <div class="card research-search-card">
+            <div class="card-header">
+                <h3><i class="fas fa-search"></i> Research a Stock</h3>
+            </div>
+        <div class="card-content">
+            <div class="search-box">
+                <input type="text" id="analysisSearch" placeholder="Enter stock symbol (e.g., NVDA, TSLA, AAPL)"
+                       class="search-input" autocomplete="off">
+                <button class="btn-primary" onclick="analyzeStock()">
+                    <i class="fas fa-chart-line"></i> Build Research View
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="analysisResults" style="display: none;">
+        <div class="research-hero-grid">
+            <div class="card research-hero-card">
+                <div class="card-content">
+                    <div class="research-hero-top">
+                        <div>
+                            <div class="research-eyebrow">Samiallo&apos;s research focus</div>
+                            <h2 id="analysisSymbol">--</h2>
+                            <div class="research-company" id="analysisCompany">Loading company...</div>
+                        </div>
+                        <div class="research-price-block">
+                            <div class="research-price" id="heroPrice">--</div>
+                            <div class="research-price-change" id="heroChange">--</div>
+                        </div>
+                    </div>
+                    <div class="research-focus-toolbar" id="researchFocusToolbar"></div>
+                    <div class="research-hero-meta" id="researchHeroMeta"></div>
+                    <div class="research-summary" id="companySummary"></div>
+                </div>
+            </div>
+
+            <div class="card research-ai-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-robot"></i> AI Summary</h3>
+                </div>
+                <div class="card-content" id="aiAnalysis">
+                    <div class="loading-spinner">Building AI summary...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="research-metrics-grid" id="snapshotMetrics"></div>
+
+        <div class="card dcf-card">
+            <div class="card-header">
+                <h3><i class="fas fa-calculator"></i> DCF Valuation</h3>
+                <div class="dcf-header-badge" id="dcfStatusBadge">Base case</div>
+            </div>
+            <div class="card-content" id="dcfSection">
+                <div class="loading-spinner">Building discounted cash flow model...</div>
+            </div>
+        </div>
+
+        <div class="research-main-grid">
+            <div class="research-main-left">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-area"></i> Price Performance</h3>
+                        <div class="chart-controls">
+                            <button class="btn-sm active" onclick="switchPriceView('price')">Price</button>
+                            <button class="btn-sm" onclick="switchPriceView('performance')">Return %</button>
+                        </div>
+                    </div>
+                    <div class="card-content research-chart-panel">
+                        <div class="research-chart-frame research-chart-frame-lg">
+                            <canvas id="pricePerformanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-balance-scale"></i> Stock vs S&amp;P 500</h3>
+                    </div>
+                    <div class="card-content research-chart-panel">
+                        <div class="research-chart-frame research-chart-frame-md">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-coins"></i> Earnings Trends</h3>
+                        <div class="chart-controls">
+                            <button class="btn-sm active" onclick="switchFinancialView('quarterly')">Quarterly</button>
+                        </div>
+                    </div>
+                    <div class="card-content research-chart-panel">
+                        <div class="research-chart-frame research-chart-frame-md">
+                            <canvas id="financialTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar"></i> Recent Earnings</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="recentEarnings" class="earnings-summary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="research-main-right">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bullseye"></i> Price Targets</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="priceTargetRange" class="target-range-card"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Recommendation Summary</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="recommendation-summary-copy" id="recommendationHeadline"></div>
+                        <div class="research-chart-frame recommendation-chart-frame">
+                            <canvas id="recommendationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Analyst Insights</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="analystChanges" class="analyst-list"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-newspaper"></i> Recent News Impact</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="newsList" class="news-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/news.js', v='20260416h') }}"></script>
+{% endblock %}
