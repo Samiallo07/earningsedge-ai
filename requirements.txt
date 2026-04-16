@@ -7,3 +7,4 @@ pandas==2.0.3
 requests==2.31.0
 lxml==5.2.2
 curl-cffi==0.7.1
+gunicorn==21.2.0
