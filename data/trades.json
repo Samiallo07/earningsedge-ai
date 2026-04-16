@@ -88,7 +88,7 @@
     "monitoring": {
       "current_price": 197.81500244140625,
       "current_price_formatted": "$197.82",
-      "updated_at": "2026-04-16T14:34:31.127782-04:00",
+      "updated_at": "2026-04-16T14:35:32.729031-04:00",
       "alerts": []
     },
     "result": null,
@@ -96,6 +96,9 @@
     "stock_symbol": "NVDA",
     "profit_loss": null,
     "profit_pct": null,
+    "live_profit_loss": 609.73,
+    "live_profit_pct": 11.89,
+    "distance_to_stop": 37.82,
     "distance_to_stop_pct": 23.63,
     "distance_to_target": 32.18,
     "distance_to_target_pct": 16.27,
@@ -944,9 +947,9 @@
       ]
     },
     "monitoring": {
-      "current_price": 108.21499633789062,
+      "current_price": 108.20500183105469,
       "current_price_formatted": "$108.21",
-      "updated_at": "2026-04-16T14:34:31.123726-04:00",
+      "updated_at": "2026-04-16T14:35:32.726960-04:00",
       "alerts": []
     },
     "result": null,
@@ -960,12 +963,12 @@
     "risk_reward_ratio": 0.78,
     "profit_loss": null,
     "profit_pct": null,
-    "live_profit_loss": 10.75,
-    "live_profit_pct": 0.2,
+    "live_profit_loss": 10.25,
+    "live_profit_pct": 0.19,
     "distance_to_stop": 9.21,
-    "distance_to_stop_pct": 9.31,
+    "distance_to_stop_pct": 9.3,
     "distance_to_target": 6.79,
-    "distance_to_target_pct": 6.27,
+    "distance_to_target_pct": 6.28,
     "outcome": null
   },
   {
@@ -1081,9 +1084,9 @@
       ]
     },
     "monitoring": {
-      "current_price": 71.58499908447266,
-      "current_price_formatted": "$71.58",
-      "updated_at": "2026-04-16T14:34:31.117122-04:00",
+      "current_price": 71.55999755859375,
+      "current_price_formatted": "$71.56",
+      "updated_at": "2026-04-16T14:35:32.723959-04:00",
       "alerts": []
     },
     "result": null,
@@ -1097,12 +1100,12 @@
     "risk_reward_ratio": 1.33,
     "profit_loss": null,
     "profit_pct": null,
-    "live_profit_loss": 40.95,
-    "live_profit_pct": 0.82,
-    "distance_to_stop": 3.58,
-    "distance_to_stop_pct": 5.27,
-    "distance_to_target": 3.42,
-    "distance_to_target_pct": 4.77,
+    "live_profit_loss": 39.2,
+    "live_profit_pct": 0.79,
+    "distance_to_stop": 3.56,
+    "distance_to_stop_pct": 5.24,
+    "distance_to_target": 3.44,
+    "distance_to_target_pct": 4.81,
     "outcome": null
   }
 ]
